@@ -1,7 +1,11 @@
 import { fetch as crossFetch, type Response } from 'cross-fetch';
 import { createInMemoryFridStore, type FridStore } from './frid-store.js';
 
-export type { FridStore } from './frid-store.js';
+export {
+  createInMemoryFridStore,
+  createWebStorageFridStore,
+  type FridStore,
+} from './frid-store';
 
 const ANTIFRAUD_SCRIPT_ID = `antifraud-${Date.now()}`;
 
@@ -46,6 +50,7 @@ export type InternalAgencyClient = {
   submitMsisdn(msisdn: string): Promise<SubmitMsisdnResponse>;
   checkSubscription(msisdn?: string): Promise<CheckSubscriptionResponse>;
   loadAntifraud(selector: string, options?: { tag?: string, observerTarget?: Element }): Promise<void>;
+  fridStore: FridStore;
 };
 
 class ResponseError extends Error {
@@ -195,5 +200,6 @@ export function createInternalAgencyClient(parameters: {
     saveEvent,
     checkSubscription,
     loadAntifraud,
+    fridStore,
   });
 }
