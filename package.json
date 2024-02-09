@@ -1,0 +1,38 @@
+{
+    "name": "@simmcomm/internal-agency-client",
+    "version": "0.0.1",
+    "description": "Internal Agency API client",
+    "author": "Ivan Pepelko <ivan.pepelko@gmail.com>",
+    "license": "UNLICENSED",
+    "private": false,
+    "type": "module",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist/**"
+    ],
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "dev": "rm -rf dist && tsc --watch",
+        "build": "rm -rf dist && tsc",
+        "prepack": "yarn build",
+        "test": "mocha"
+    },
+    "dependencies": {
+        "cross-fetch": "^4.0.0"
+    },
+    "devDependencies": {
+        "@types/chai": "^4.3.11",
+        "@types/mocha": "^10.0.6",
+        "chai": "^5.0.3",
+        "mocha": "^10.2.0",
+        "typescript": "^5.3.3"
+    }
+}
