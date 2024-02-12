@@ -5,7 +5,7 @@ export {
   createInMemoryFridStore,
   createWebStorageFridStore,
   type FridStore,
-} from './frid-store';
+} from './frid-store.js';
 
 const ANTIFRAUD_SCRIPT_ID = `antifraud-${Date.now()}`;
 
