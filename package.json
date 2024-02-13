@@ -1,6 +1,6 @@
 {
     "name": "@simmcomm/internal-agency-client",
-    "version": "0.0.3",
+    "version": "1.0.0",
     "description": "Internal Agency API client",
     "author": "Ivan Pepelko <ivan.pepelko@gmail.com>",
     "license": "UNLICENSED",
