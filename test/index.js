@@ -32,6 +32,7 @@ describe('Internal Agency API client', () => {
       expect(client.loadAntifraud).to.be.a('function');
       expect(client.saveEvent).to.be.a('function');
       expect(client.submitMsisdn).to.be.a('function');
+      expect(client.validatePin).to.be.a('function');
     });
   });
 
@@ -75,6 +76,17 @@ describe('Internal Agency API client', () => {
         parameters: ['0781234567'],
         searchParams: {
           action: 'submitmsisdn',
+          msisdn: '0781234567',
+        },
+        options: {
+          method: 'GET',
+        },
+      },
+      {
+        method: 'validatePin',
+        parameters: ['0781234567', '1234'],
+        searchParams: {
+          action: 'validate_pin',
           msisdn: '0781234567',
         },
         options: {
