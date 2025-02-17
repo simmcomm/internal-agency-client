@@ -24,6 +24,7 @@ export type SubmitMsisdnOkResponse = _SubmitMsisdnResponse & {
   sms_to: string;
   sms_body: string;
   frid: string;
+  operatorcode: string;
 };
 
 export type SubmitMsisdnErrorResponse = _SubmitMsisdnResponse & {
