@@ -15,7 +15,7 @@ function evinaNotifyInWindow(window: Window): window is Window & { evina_notify:
   return 'evina_notify' in window && typeof window.evina_notify === 'function';
 }
 
-type Action = 'submitmsisdn' | 'event' | 'check' | 'antifraud' | 'validate_pin';
+type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin';
 
 type _SubmitMsisdnResponse = { message: string; };
 
@@ -76,11 +76,13 @@ export function createInternalAgencyClient(parameters: {
   apiEndpoint?: string;
   fridStore?: FridStore;
   fetch?: typeof window.fetch;
+  ublockWorkaround?: boolean;
 }): Readonly<InternalAgencyClient> {
   const { campaignId, serviceId } = parameters;
   const apiEndpoint = parameters.apiEndpoint ?? 'https://agency-api.flowly.com/internal/';
   const fridStore = parameters.fridStore ?? createInMemoryFridStore();
   const fetch = parameters.fetch ?? crossFetch;
+  const ublockWorkaround = parameters.ublockWorkaround ?? false;
 
   function createApiUrl(action: Action, requestData: Record<string, unknown>): URL {
     const url = new URL(apiEndpoint);
@@ -139,7 +141,8 @@ export function createInternalAgencyClient(parameters: {
   };
 
   const saveEvent = (event: string, data?: unknown): Promise<SaveEventResponse> => {
-    return doFetch('POST', 'event', { event }, { body: JSON.stringify(data) });
+    const eventParam = ublockWorkaround ? 'pk' : 'event';
+    return doFetch('POST', eventParam, { event }, { body: JSON.stringify(data) });
   };
 
   const checkSubscription = (msisdn = undefined): Promise<CheckSubscriptionResponse> => {
