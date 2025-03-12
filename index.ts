@@ -82,7 +82,7 @@ export function createInternalAgencyClient(parameters: {
   const apiEndpoint = parameters.apiEndpoint ?? 'https://agency-api.flowly.com/internal/';
   const fridStore = parameters.fridStore ?? createInMemoryFridStore();
   const fetch = parameters.fetch ?? crossFetch;
-  const ublockWorkaround = parameters.ublockWorkaround ?? false;
+  const ublockWorkaround = parameters.ublockWorkaround ?? true;
 
   function createApiUrl(action: Action, requestData: Record<string, unknown>): URL {
     const url = new URL(apiEndpoint);
