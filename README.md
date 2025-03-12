@@ -40,6 +40,7 @@ declare function createInternalAgencyClient(parameters: {
   serviceId: string;
   apiEndpoint?: string; // defines alternate API endponint
   fridStore?: FridStore; // frid store implementation, default is in-memory
+  ublockWorkaround?: boolean; // remaps certain parameters to bypass uBlock blocking
   fetch?: typeof window.fetch; // fetch implementation, mainly for testing
 }): Readonly<InternalAgencyClient>;
 ```
