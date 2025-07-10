@@ -18,11 +18,19 @@ function evinaNotifyInWindow(window: Window): window is Window & { evina_notify:
 type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin';
 
 type _SubmitMsisdnResponse = { message: string; };
-
-export type SubmitMsisdnOkResponse = _SubmitMsisdnResponse & {
-  status: 'ok';
+type _SubmitMsisdnOkSmsResponse = {
   sms_to: string;
   sms_body: string;
+};
+type _SubmitMsisdnOkRedirectResponse = {
+  redirect: string;
+}
+
+export type SubmitMsisdnOkResponse =
+  & (_SubmitMsisdnOkSmsResponse | _SubmitMsisdnOkRedirectResponse)
+  & _SubmitMsisdnResponse
+  & {
+  status: 'ok';
   frid: string;
   operatorcode: string;
 };
