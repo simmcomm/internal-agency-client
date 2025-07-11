@@ -15,7 +15,7 @@ function evinaNotifyInWindow(window: Window): window is Window & { evina_notify:
   return 'evina_notify' in window && typeof window.evina_notify === 'function';
 }
 
-type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin';
+type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin' | 'create_subscription';
 
 type _SubmitMsisdnResponse = { message: string; };
 type _SubmitMsisdnOkSmsResponse = {
@@ -60,12 +60,28 @@ export type ValidatePinResponse = {
   retry: boolean;
 }
 
+type _CreateSubscriptionOkResponse = {
+  status: 'ok';
+  redirect: string;
+}
+
+type _CreateSubscriptionErrorResponse = {
+  status: 'error';
+  message: string;
+}
+
+export type CreateSubscriptionResponse =
+  | _CreateSubscriptionOkResponse
+  | _CreateSubscriptionErrorResponse
+  ;
+
 export type InternalAgencyClient = {
   saveEvent(event: string, data?: unknown): Promise<SaveEventResponse>;
   submitMsisdn(msisdn: string): Promise<SubmitMsisdnResponse>;
   checkSubscription(msisdn?: string): Promise<CheckSubscriptionResponse>;
   loadAntifraud(selector: string, options?: { tag?: string, observerTarget?: Element }): Promise<void>;
   validatePin(msisdn: string, pin: string): Promise<ValidatePinResponse>;
+  createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
   fridStore: FridStore;
 };
 
@@ -218,6 +234,10 @@ export function createInternalAgencyClient(parameters: {
     return doFetch('GET', 'validate_pin', { frid: fridStore.getFrid(), msisdn, pin });
   };
 
+  const createSubscription = async (frid: string): Promise<CreateSubscriptionResponse> => {
+    return doFetch('POST', 'create_subscription', { frid });
+  };
+
   return Object.freeze({
     submitMsisdn,
     saveEvent,
@@ -225,5 +245,6 @@ export function createInternalAgencyClient(parameters: {
     loadAntifraud,
     fridStore,
     validatePin,
+    createSubscription,
   });
 }
