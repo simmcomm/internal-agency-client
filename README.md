@@ -121,6 +121,9 @@ export type InternalAgencyClient = {
   submitMsisdn(msisdn: string): Promise<SubmitMsisdnResponse>;
   checkSubscription(msisdn?: string): Promise<CheckSubscriptionResponse>;
   loadAntifraud(selector: string, options?: { tag?: string, observerTarget?: Element }): Promise<void>;
+  validatePin(msisdn: string, pin: string): Promise<ValidatePinResponse>;
+  createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
+  storeUserData(msisdn: string, payload: unknown): Promise<StoreUserDataResponse>;
   fridStore: FridStore;
 };
 ```
