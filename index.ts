@@ -1,4 +1,4 @@
-import { fetch as crossFetch, type Response } from 'cross-fetch';
+import { fetch as crossFetch } from 'cross-fetch';
 import { createInMemoryFridStore, type FridStore } from './frid-store.js';
 
 export {
@@ -15,7 +15,7 @@ function evinaNotifyInWindow(window: Window): window is Window & { evina_notify:
   return 'evina_notify' in window && typeof window.evina_notify === 'function';
 }
 
-type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin' | 'create_subscription';
+type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin' | 'create_subscription' | 'store_userdata';
 
 type _SubmitMsisdnResponse = { message: string; };
 type _SubmitMsisdnOkSmsResponse = {
@@ -75,6 +75,12 @@ export type CreateSubscriptionResponse =
   | _CreateSubscriptionErrorResponse
   ;
 
+type StoreUserDataResponse = {
+  status: 'ok' | 'error';
+  message: string;
+  frid?: string;
+}
+
 export type InternalAgencyClient = {
   saveEvent(event: string, data?: unknown): Promise<SaveEventResponse>;
   submitMsisdn(msisdn: string): Promise<SubmitMsisdnResponse>;
@@ -82,6 +88,7 @@ export type InternalAgencyClient = {
   loadAntifraud(selector: string, options?: { tag?: string, observerTarget?: Element }): Promise<void>;
   validatePin(msisdn: string, pin: string): Promise<ValidatePinResponse>;
   createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
+  storeUserData(msisdn: string, payload: unknown): Promise<StoreUserDataResponse>;
   fridStore: FridStore;
 };
 
@@ -135,7 +142,7 @@ export function createInternalAgencyClient(parameters: {
     method: 'GET' | 'POST',
     action: Action,
     requestData = {},
-    requestOptions = {},
+    requestOptions: Omit<Parameters<typeof fetch>[1], 'method'> = {},
   ) {
     const url = createApiUrl(action, requestData);
     const frid = fridStore.getFrid();
@@ -238,6 +245,12 @@ export function createInternalAgencyClient(parameters: {
     return doFetch('POST', 'create_subscription', { frid });
   };
 
+  const storeUserData: InternalAgencyClient['storeUserData'] = (msisdn, payload): Promise<StoreUserDataResponse> => {
+    return doFetch('POST', 'store_userdata', { frid: fridStore.getFrid(), msisdn }, {
+      body: JSON.stringify(payload),
+    });
+  };
+
   return Object.freeze({
     submitMsisdn,
     saveEvent,
@@ -246,5 +259,6 @@ export function createInternalAgencyClient(parameters: {
     fridStore,
     validatePin,
     createSubscription,
+    storeUserData,
   });
 }
