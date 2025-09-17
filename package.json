@@ -12,7 +12,10 @@
     "files": [
         "dist/**"
     ],
-    "exports": {
+  "engines": {
+    "node": ">=21.0.0"
+  },
+  "exports": {
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js",
@@ -24,9 +27,6 @@
         "build": "rm -rf dist && tsc",
         "prepack": "yarn build",
         "test": "mocha"
-    },
-    "dependencies": {
-        "cross-fetch": "^4.0.0"
     },
     "devDependencies": {
         "@types/chai": "^4.3.11",

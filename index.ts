@@ -1,4 +1,3 @@
-import { fetch as crossFetch } from 'cross-fetch';
 import { createInMemoryFridStore, type FridStore } from './frid-store.js';
 
 export {
@@ -121,7 +120,7 @@ export function createInternalAgencyClient(parameters: {
   const { campaignId, serviceId } = parameters;
   const apiEndpoint = parameters.apiEndpoint ?? 'https://agency-api.flowly.com/internal/';
   const fridStore = parameters.fridStore ?? createInMemoryFridStore();
-  const fetch = parameters.fetch ?? crossFetch;
+  const fetch = parameters.fetch ?? globalThis.fetch;
   const ublockWorkaround = parameters.ublockWorkaround ?? true;
 
   function createApiUrl(action: Action, requestData: Record<string, unknown>): URL {
