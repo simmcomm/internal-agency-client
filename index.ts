@@ -81,6 +81,15 @@ type StoreUserDataResponse = {
   frid?: string;
 }
 
+type StoreUserDataPayload = {
+  zip: string;
+  city: string;
+  street: string;
+  product: string;
+  lastname: string;
+  firstname: string;
+} | unknown;
+
 export type InternalAgencyClient = {
   saveEvent(event: string, data?: unknown): Promise<SaveEventResponse>;
   submitMsisdn(msisdn: string): Promise<SubmitMsisdnResponse>;
@@ -88,7 +97,7 @@ export type InternalAgencyClient = {
   loadAntifraud(selector: string, options?: { tag?: string, observerTarget?: Element }): Promise<void>;
   validatePin(msisdn: string, pin: string): Promise<ValidatePinResponse>;
   createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
-  storeUserData(msisdn: string, payload: unknown): Promise<StoreUserDataResponse>;
+  storeUserData(msisdn: string, payload: StoreUserDataPayload): Promise<StoreUserDataResponse>;
   fridStore: FridStore;
 };
 
@@ -246,7 +255,7 @@ export function createInternalAgencyClient(parameters: {
   };
 
   const storeUserData: InternalAgencyClient['storeUserData'] = (msisdn, payload): Promise<StoreUserDataResponse> => {
-    return doFetch('POST', 'store_userdata', { frid: fridStore.getFrid(), msisdn }, {
+    return doFetch('POST', 'store_userdata', { msisdn }, {
       body: JSON.stringify(payload),
     });
   };
