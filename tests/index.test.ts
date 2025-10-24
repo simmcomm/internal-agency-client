@@ -1,7 +1,5 @@
 import { assertType, describe, expect, it, vi } from 'vitest';
-import { createInternalAgencyClient } from './index';
-
-const TEST_ENDPOINT = 'https://test.com/internal/';
+import { createInternalAgencyClient } from '../src';
 
 const mockFetch = vi.fn().mockImplementation(async () => new Response('{}'));
 const createTestClient = () => {
@@ -10,7 +8,6 @@ const createTestClient = () => {
       campaignId: 'campaignid',
       serviceId: 'serviceid',
       fetch: mockFetch,
-      apiEndpoint: TEST_ENDPOINT,
     }),
   };
 };

@@ -1,35 +1,46 @@
 {
-    "name": "@simmcomm/internal-agency-client",
+  "name": "@simmcomm/internal-agency-client",
   "version": "1.4.0",
-    "description": "Internal Agency API client",
-    "author": "Ivan Pepelko <ivan.pepelko@gmail.com>",
-    "license": "UNLICENSED",
-    "private": false,
-    "type": "module",
-    "main": "./dist/index.js",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
-    "files": [
-        "dist/**"
-    ],
+  "description": "Internal Agency API client",
+  "author": "Ivan Pepelko <ivan.pepelko@gmail.com>",
+  "license": "UNLICENSED",
+  "homepage": "https://github.com/simmcomm/internal-agency-client#readme",
+  "bugs": {
+    "url": "https://github.com/simmcomm/internal-agency-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simmcomm/internal-agency-client.git"
+  },
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=21.0.0"
   },
   "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js",
-            "default": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "dev": "rm -rf dist && tsc --watch",
-        "build": "rm -rf dist && tsc",
-        "prepack": "yarn build",
-      "test": "vitest --typecheck"
-    },
-    "devDependencies": {
-      "typescript": "^5.3.3",
-      "vitest": "^4.0.1"
-    }
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest --typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "@vitest/coverage-v8": "^4.0.2",
+    "bumpp": "^10.3.1",
+    "tsdown": "^0.15.9",
+    "typescript": "^5.3.3",
+    "vitest": "^4.0.1"
+  }
 }
