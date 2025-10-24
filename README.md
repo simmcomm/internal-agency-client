@@ -111,6 +111,19 @@ const webStorageFridStore = createWebStorageFridStore({
 const inMemoryFridStore = createInMemoryFridStore();
 ```
 
+### Listening for FRID changes
+
+Sample usage:
+
+```javascript
+const unsubscribe = client.onFridChange((previousFrid, newFrid) => {
+  // do something with the new frid
+});
+
+// clean up later
+unsubscribe();
+```
+
 ### Methods
 
 The client is described with this type declaration:
@@ -124,6 +137,7 @@ export type InternalAgencyClient = {
   validatePin(msisdn: string, pin: string): Promise<ValidatePinResponse>;
   createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
   storeUserData(msisdn: string, payload: unknown): Promise<StoreUserDataResponse>;
+  onFridChange(callback: (previousFrid: string, newFrid: string) => void): () => void;
   fridStore: FridStore;
 };
 ```
