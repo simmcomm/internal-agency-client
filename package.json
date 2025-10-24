@@ -33,7 +33,9 @@
   "scripts": {
     "build": "tsdown",
     "dev": "tsdown --watch",
-    "test": "vitest --typecheck"
+    "test": "vitest --typecheck",
+    "release": "bumpp && npm publish",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^24.9.1",
