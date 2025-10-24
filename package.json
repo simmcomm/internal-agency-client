@@ -26,13 +26,10 @@
         "dev": "rm -rf dist && tsc --watch",
         "build": "rm -rf dist && tsc",
         "prepack": "yarn build",
-        "test": "mocha"
+      "test": "vitest --typecheck"
     },
     "devDependencies": {
-        "@types/chai": "^4.3.11",
-        "@types/mocha": "^10.0.6",
-        "chai": "^5.0.3",
-        "mocha": "^10.2.0",
-        "typescript": "^5.3.3"
+      "typescript": "^5.3.3",
+      "vitest": "^4.0.1"
     }
 }
