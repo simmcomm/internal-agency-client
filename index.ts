@@ -7,6 +7,7 @@ export {
 } from './frid-store.js';
 
 const ANTIFRAUD_SCRIPT_ID = `antifraud-${Date.now()}`;
+const FRID_CHANGE_EVENT = 'frid-change';
 
 type EvinaNotifyFunction = (event: Event, cb?: () => void) => void;
 
@@ -97,6 +98,12 @@ export type InternalAgencyClient = {
   validatePin(msisdn: string, pin: string): Promise<ValidatePinResponse>;
   createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
   storeUserData(msisdn: string, payload: StoreUserDataPayload): Promise<StoreUserDataResponse>;
+  /**
+   * Registers a callback that will be called when frid changes.
+   * @param callback
+   * @returns a cleanup function that can be called to unregister the callback.
+   */
+  onFridChange(callback: (previousFrid: string, newFrid: string) => void): () => void;
   fridStore: FridStore;
 };
 
@@ -122,6 +129,7 @@ export function createInternalAgencyClient(parameters: {
   const fridStore = parameters.fridStore ?? createInMemoryFridStore();
   const fetch = parameters.fetch ?? globalThis.fetch;
   const ublockWorkaround = parameters.ublockWorkaround ?? true;
+  const eventTarget = new EventTarget();
 
   function createApiUrl(action: Action, requestData: Record<string, unknown>): URL {
     const url = new URL(apiEndpoint);
@@ -170,6 +178,12 @@ export function createInternalAgencyClient(parameters: {
 
     if ('frid' in data) {
       fridStore.setFrid(data.frid);
+      eventTarget.dispatchEvent(new CustomEvent(FRID_CHANGE_EVENT, {
+        detail: {
+          previousFrid: frid,
+          newFrid: data.frid,
+        },
+      }));
     }
 
     return data;
@@ -259,6 +273,19 @@ export function createInternalAgencyClient(parameters: {
     });
   };
 
+  const onFridChange: InternalAgencyClient['onFridChange'] = (callback: (previousFrid: string, newFrid: string) => void) => {
+    const listener = (event: Event) => {
+      const e = event as CustomEvent;
+      callback(e.detail.previousFrid, e.detail.newFrid);
+    };
+
+    eventTarget.addEventListener(FRID_CHANGE_EVENT, listener);
+
+    return (() => {
+      eventTarget.removeEventListener(FRID_CHANGE_EVENT, listener);
+    });
+  };
+
   return Object.freeze({
     submitMsisdn,
     saveEvent,
@@ -268,5 +295,6 @@ export function createInternalAgencyClient(parameters: {
     validatePin,
     createSubscription,
     storeUserData,
+    onFridChange,
   });
 }

@@ -117,4 +117,33 @@ describe('Internal Agency API client', () => {
 
   });
 
+  describe('listen for fridChange event', () => {
+    it('should listen for fridChange event', async () => {
+      const testClient = createInternalAgencyClient({
+        campaignId: 'campaignid',
+        serviceId: 'serviceid',
+        fridStore: {
+          getFrid: () => 'oldFrid',
+          setFrid: () => {},
+        },
+        fetch: (...args) => {
+          return Promise.resolve(new Response(JSON.stringify({
+            ok: true,
+            status: 200,
+            frid: 'newFrid',
+          })));
+        },
+      });
+
+      const callback = vi.fn();
+      const cleanup = testClient.onFridChange(callback);
+      await testClient.submitMsisdn('0781234567');
+      expect(callback).toHaveBeenCalledWith('oldFrid', 'newFrid');
+      cleanup();
+      await testClient.submitMsisdn('0781234567');
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+
+  });
+
 });
