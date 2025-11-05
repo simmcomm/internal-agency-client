@@ -192,16 +192,16 @@ export function createInternalAgencyClient(parameters: {
     return data;
   }
 
-  const submitMsisdn = (msisdn: string): Promise<SubmitMsisdnResponse> => {
+  const submitMsisdn: InternalAgencyClient['submitMsisdn'] = (msisdn) => {
     return doFetch('GET', 'submitmsisdn', { msisdn });
   };
 
-  const saveEvent = (event: string, data?: unknown): Promise<SaveEventResponse> => {
+  const saveEvent: InternalAgencyClient['saveEvent'] = (event, data?) => {
     const eventParam = ublockWorkaround ? 'pk' : 'event';
     return doFetch('POST', eventParam, { event }, { body: JSON.stringify(data) });
   };
 
-  const checkSubscription = (msisdn = undefined): Promise<CheckSubscriptionResponse> => {
+  const checkSubscription: InternalAgencyClient['checkSubscription'] = (msisdn = undefined) => {
     const params: Partial<Record<'msisdn' | 'frid', string>> = {};
     if (msisdn) {
       params.msisdn = msisdn;
@@ -211,10 +211,7 @@ export function createInternalAgencyClient(parameters: {
     return doFetch('GET', 'check', params);
   };
 
-  const loadAntifraud = async (
-    selector: string,
-    options: { tag?: string, observerTarget?: Element },
-  ): Promise<void> => {
+  const loadAntifraud: InternalAgencyClient['loadAntifraud'] = async (selector, options) => {
     if (!(typeof window !== 'undefined' && window === globalThis)) {
       throw new Error('internal-agency-client: calling loadAntifraud() makes sense only in browser environment');
     }
@@ -262,11 +259,11 @@ export function createInternalAgencyClient(parameters: {
     });
   };
 
-  const validatePin = async (msisdn: string, pin: string): Promise<ValidatePinResponse> => {
+  const validatePin: InternalAgencyClient['validatePin'] = async (msisdn, pin) => {
     return doFetch('GET', 'validate_pin', { frid: fridStore.getFrid(), msisdn, pin });
   };
 
-  const createSubscription = async (frid: string): Promise<CreateSubscriptionResponse> => {
+  const createSubscription: InternalAgencyClient['createSubscription'] = async (frid) => {
     return doFetch('POST', 'create_subscription', { frid });
   };
 
@@ -276,7 +273,7 @@ export function createInternalAgencyClient(parameters: {
     });
   };
 
-  const onFridChange: InternalAgencyClient['onFridChange'] = (callback: (previousFrid: string, newFrid: string) => void) => {
+  const onFridChange: InternalAgencyClient['onFridChange'] = (callback) => {
     const listener = (event: Event) => {
       const e = event as CustomEvent;
       callback(e.detail.previousFrid, e.detail.newFrid);
