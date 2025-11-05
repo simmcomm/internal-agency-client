@@ -25,14 +25,17 @@ type _SubmitMsisdnOkSmsResponse = {
 type _SubmitMsisdnOkRedirectResponse = {
   redirect: string;
 }
+type _SubmitMsisdnOkPinResponse = {
+  pin_length: number;
+}
 
 export type SubmitMsisdnOkResponse =
-  & (_SubmitMsisdnOkSmsResponse | _SubmitMsisdnOkRedirectResponse)
+  & (_SubmitMsisdnOkSmsResponse | _SubmitMsisdnOkRedirectResponse | _SubmitMsisdnOkPinResponse)
   & _SubmitMsisdnResponse
   & {
   status: 'ok';
   frid: string;
-  operatorcode: string;
+  operatorcode: string | null;
 };
 
 export type SubmitMsisdnErrorResponse = _SubmitMsisdnResponse & {
