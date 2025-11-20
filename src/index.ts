@@ -21,6 +21,10 @@ type _SubmitMsisdnResponse = { message: string; };
 type _SubmitMsisdnOkSmsResponse = {
   sms_to: string;
   sms_body: string;
+  display_shortcode: string;
+  display_keyword: string;
+  click2sms: boolean;
+  auto_click2sms: boolean;
 };
 type _SubmitMsisdnOkRedirectResponse = {
   redirect: string;
