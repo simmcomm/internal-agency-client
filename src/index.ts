@@ -15,7 +15,7 @@ function evinaNotifyInWindow(window: Window): window is Window & { evina_notify:
   return 'evina_notify' in window && typeof window.evina_notify === 'function';
 }
 
-type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin' | 'create_subscription' | 'store_userdata';
+type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin' | 'create_subscription' | 'store_userdata' | 'get_msisdn_info';
 
 type _SubmitMsisdnResponse = { message: string; };
 type _SubmitMsisdnOkSmsResponse = {
@@ -67,6 +67,16 @@ export type ValidatePinResponse = {
   retry: boolean;
 }
 
+export type GetMsisdnInfoResponse = {
+  status: 'ok' | 'error';
+  message: string;
+  frid: string;
+  msisdn: string;
+  blacklisted: boolean;
+  invalidate_cookie: boolean;
+  subscriptions: Array<String>;
+}
+
 type _CreateSubscriptionOkResponse = {
   status: 'ok';
   redirect: string;
@@ -103,6 +113,7 @@ export type InternalAgencyClient = {
   checkSubscription(msisdn?: string): Promise<CheckSubscriptionResponse>;
   loadAntifraud(selector: string, options?: { tag?: string, observerTarget?: Element }): Promise<void>;
   validatePin(msisdn: string, pin: string): Promise<ValidatePinResponse>;
+  getMsisdnInfo(msisdn: string): Promise<GetMsisdnInfoResponse>;
   createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
   storeUserData(msisdn: string, payload: StoreUserDataPayload): Promise<StoreUserDataResponse>;
   /**
@@ -267,6 +278,10 @@ export function createInternalAgencyClient(parameters: {
     return doFetch('GET', 'validate_pin', { frid: fridStore.getFrid(), msisdn, pin });
   };
 
+  const getMsisdnInfo: InternalAgencyClient['getMsisdnInfo'] = async (msisdn) => {
+    return doFetch('POST', 'get_msisdn_info', { frid: fridStore.getFrid(), msisdn });
+  };
+
   const createSubscription: InternalAgencyClient['createSubscription'] = async (frid) => {
     return doFetch('POST', 'create_subscription', { frid });
   };
@@ -297,6 +312,7 @@ export function createInternalAgencyClient(parameters: {
     loadAntifraud,
     fridStore,
     validatePin,
+    getMsisdnInfo,
     createSubscription,
     storeUserData,
     onFridChange,
