@@ -68,14 +68,17 @@ export type ValidatePinResponse = {
 }
 
 export type GetMsisdnInfoResponse = {
-  status: 'ok' | 'error';
+  status: 'ok';
   message: string;
   frid: string;
   msisdn: string;
   blacklisted: boolean;
   invalidate_cookie: boolean;
   current_mccmnc: string;
-  subscriptions: Array<String>;
+  subscriptions: string[];
+} | {
+  status: 'error';
+  message: string;
 }
 
 type _CreateSubscriptionOkResponse = {
