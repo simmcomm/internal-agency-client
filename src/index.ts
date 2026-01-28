@@ -74,6 +74,7 @@ export type GetMsisdnInfoResponse = {
   msisdn: string;
   blacklisted: boolean;
   invalidate_cookie: boolean;
+  current_mccmnc: string;
   subscriptions: Array<String>;
 }
 
@@ -279,7 +280,7 @@ export function createInternalAgencyClient(parameters: {
   };
 
   const getMsisdnInfo: InternalAgencyClient['getMsisdnInfo'] = async (msisdn) => {
-    return doFetch('POST', 'get_msisdn_info', { frid: fridStore.getFrid(), msisdn });
+    return doFetch('POST', 'get_msisdn_info', { 'retrieve-hlr': '1', msisdn });
   };
 
   const createSubscription: InternalAgencyClient['createSubscription'] = async (frid) => {
