@@ -280,7 +280,7 @@ export function createInternalAgencyClient(parameters: {
   };
 
   const getMsisdnInfo: InternalAgencyClient['getMsisdnInfo'] = async (msisdn) => {
-    return doFetch('POST', 'get_msisdn_info', { 'retrieve-hlr': '1', msisdn });
+    return doFetch('POST', 'get_msisdn_info', { msisdn });
   };
 
   const createSubscription: InternalAgencyClient['createSubscription'] = async (frid) => {
