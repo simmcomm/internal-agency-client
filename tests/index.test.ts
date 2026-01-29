@@ -94,6 +94,27 @@ describe('Internal Agency API client', () => {
           method: 'GET',
         },
       },
+      {
+        method: testClient.getMsisdnInfo,
+        parameters: ['0781234567'],
+        searchParams: {
+          action: 'get_msisdn_info',
+          msisdn: '0781234567',
+        },
+        options: {
+          method: 'POST',
+        },
+      },
+      {
+        method: testClient.generateMo,
+        parameters: [],
+        searchParams: {
+          action: 'generate_mo',
+        },
+        options: {
+          method: 'GET',
+        },
+      },
     ];
 
     testParametersCases.forEach(({ method, parameters, searchParams, options }) => {

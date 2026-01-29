@@ -15,7 +15,18 @@ function evinaNotifyInWindow(window: Window): window is Window & { evina_notify:
   return 'evina_notify' in window && typeof window.evina_notify === 'function';
 }
 
-type Action = 'submitmsisdn' | 'event' | 'pk' | 'check' | 'antifraud' | 'validate_pin' | 'create_subscription' | 'store_userdata' | 'get_msisdn_info';
+type Action =
+  | 'submitmsisdn'
+  | 'event'
+  | 'pk'
+  | 'check'
+  | 'antifraud'
+  | 'validate_pin'
+  | 'create_subscription'
+  | 'store_userdata'
+  | 'get_msisdn_info'
+  | 'generate_mo'
+  ;
 
 type _SubmitMsisdnResponse = { message: string; };
 type _SubmitMsisdnOkSmsResponse = {
@@ -48,6 +59,17 @@ export type SubmitMsisdnErrorResponse = _SubmitMsisdnResponse & {
 };
 
 type SubmitMsisdnResponse = SubmitMsisdnOkResponse | SubmitMsisdnErrorResponse;
+
+type GenerateMoResponse = {
+  status: 'ok',
+  frid: string;
+  sms_to: string;
+  sms_body: string;
+  display_shortcode: string;
+  display_keyword: string;
+  click2sms: boolean;
+  auto_click2sms: boolean;
+}
 
 export type SaveEventResponse = {
   status: 'ok' | 'error';
@@ -120,6 +142,7 @@ export type InternalAgencyClient = {
   getMsisdnInfo(msisdn: string): Promise<GetMsisdnInfoResponse>;
   createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
   storeUserData(msisdn: string, payload: StoreUserDataPayload): Promise<StoreUserDataResponse>;
+  generateMo(): Promise<GenerateMoResponse>;
   /**
    * Registers a callback that will be called when frid changes.
    * @param callback
@@ -283,7 +306,10 @@ export function createInternalAgencyClient(parameters: {
   };
 
   const getMsisdnInfo: InternalAgencyClient['getMsisdnInfo'] = async (msisdn) => {
-    return doFetch('POST', 'get_msisdn_info', { msisdn });
+    console.log('msisdninfo');
+    const result = await doFetch('POST', 'get_msisdn_info', { msisdn });
+    console.log('msisdninfo done');
+    return result;
   };
 
   const createSubscription: InternalAgencyClient['createSubscription'] = async (frid) => {
@@ -294,6 +320,13 @@ export function createInternalAgencyClient(parameters: {
     return doFetch('POST', 'store_userdata', { msisdn }, {
       body: JSON.stringify(payload),
     });
+  };
+
+  const generateMo: InternalAgencyClient['generateMo'] = () => {
+    console.log('Generating MO');
+    const result = doFetch('GET', 'generate_mo');
+    console.log('MO generated');
+    return result;
   };
 
   const onFridChange: InternalAgencyClient['onFridChange'] = (callback) => {
@@ -319,6 +352,7 @@ export function createInternalAgencyClient(parameters: {
     getMsisdnInfo,
     createSubscription,
     storeUserData,
+    generateMo,
     onFridChange,
   });
 }
