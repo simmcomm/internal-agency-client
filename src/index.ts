@@ -92,7 +92,6 @@ export type ValidatePinResponse = {
 export type GetMsisdnInfoResponse = {
   status: 'ok';
   message: string;
-  frid: string;
   msisdn: string;
   blacklisted: boolean;
   invalidate_cookie: boolean;
