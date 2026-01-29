@@ -306,10 +306,7 @@ export function createInternalAgencyClient(parameters: {
   };
 
   const getMsisdnInfo: InternalAgencyClient['getMsisdnInfo'] = async (msisdn) => {
-    console.log('msisdninfo');
-    const result = await doFetch('POST', 'get_msisdn_info', { msisdn });
-    console.log('msisdninfo done');
-    return result;
+    return doFetch('POST', 'get_msisdn_info', { msisdn });
   };
 
   const createSubscription: InternalAgencyClient['createSubscription'] = async (frid) => {
@@ -323,10 +320,7 @@ export function createInternalAgencyClient(parameters: {
   };
 
   const generateMo: InternalAgencyClient['generateMo'] = () => {
-    console.log('Generating MO');
-    const result = doFetch('GET', 'generate_mo');
-    console.log('MO generated');
-    return result;
+    return doFetch('GET', 'generate_mo');
   };
 
   const onFridChange: InternalAgencyClient['onFridChange'] = (callback) => {
