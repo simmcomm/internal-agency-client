@@ -6,8 +6,8 @@ export type FridStore = {
   setFrid(frid: string, expire?: number): void;
 }
 
-let inMemoryFrid: string;
 export const createInMemoryFridStore = (): FridStore => {
+  let inMemoryFrid: string;
   return {
     getFrid(): string | undefined {
       return inMemoryFrid;
