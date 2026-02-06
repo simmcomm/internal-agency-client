@@ -26,6 +26,8 @@ type Action =
   | 'store_userdata'
   | 'get_msisdn_info'
   | 'generate_mo'
+  | 'get_request_info'
+  | 'trigger_bulk_campaign'
   ;
 
 type _SubmitMsisdnResponse = { message: string; };
@@ -132,6 +134,26 @@ type StoreUserDataPayload = {
   firstname: string;
 } | unknown;
 
+type _RequestInfoOkResponse = {
+  status: 'ok';
+  msisdn: string;
+  frid?: string;
+  authentication: string;
+  consumer_status: 'known' | 'new';
+}
+
+type _RequestInfoErrorResponse = {
+  status: 'error';
+  message: string;
+}
+
+type RequestInfoResponse = _RequestInfoOkResponse | _RequestInfoErrorResponse;
+
+type TriggerBulkCampaignResponse = {
+  status: 'ok' | 'error';
+  message: string;
+}
+
 export type InternalAgencyClient = {
   saveEvent(event: string, data?: unknown): Promise<SaveEventResponse>;
   submitMsisdn(msisdn: string): Promise<SubmitMsisdnResponse>;
@@ -142,6 +164,8 @@ export type InternalAgencyClient = {
   createSubscription(frid: string): Promise<CreateSubscriptionResponse>;
   storeUserData(msisdn: string, payload: StoreUserDataPayload): Promise<StoreUserDataResponse>;
   generateMo(): Promise<GenerateMoResponse>;
+  getRequestInfo(): Promise<RequestInfoResponse>;
+  triggerBulkCampaign(msisdn: string): Promise<TriggerBulkCampaignResponse>;
   /**
    * Registers a callback that will be called when frid changes.
    * @param callback
@@ -322,6 +346,14 @@ export function createInternalAgencyClient(parameters: {
     return doFetch('GET', 'generate_mo');
   };
 
+  const getRequestInfo: InternalAgencyClient['getRequestInfo'] = () => {
+    return doFetch('GET', 'get_request_info');
+  };
+
+  const triggerBulkCampaign: InternalAgencyClient['triggerBulkCampaign'] = async (msisdn) => {
+    return doFetch('POST', 'trigger_bulk_campaign', { msisdn });
+  };
+
   const onFridChange: InternalAgencyClient['onFridChange'] = (callback) => {
     const listener = (event: Event) => {
       const e = event as CustomEvent;
@@ -346,6 +378,8 @@ export function createInternalAgencyClient(parameters: {
     createSubscription,
     storeUserData,
     generateMo,
+    getRequestInfo,
+    triggerBulkCampaign,
     onFridChange,
   });
 }
